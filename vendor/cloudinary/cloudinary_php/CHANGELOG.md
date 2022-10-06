@@ -1,3 +1,55 @@
+2.9.0 / 2022-09-18
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `assetsByAssetFolder` Admin API
+
+2.8.0 / 2022-08-23
+==================
+
+New functionality and features
+------------------------------
+
+  * Allow Monolog v3
+
+Other Changes
+-------------
+
+  * Use PHP in scripts
+  * Drop Travis in favor of GitHub Actions
+  * Test on PHP 8.x
+
+2.7.1 / 2022-05-26
+==================
+
+  * Fix deprecation warning
+  * Extract `Transformation` to a separate package
+
+
+2.7.0 / 2022-05-23
+==================
+
+New functionality and features
+------------------------------
+
+  * Add support for `TextFit` in text layers
+  * Add support for multiple ACLs in `AuthToken`
+  * Add support for `reorderMetadataFields` Admin API
+  * Expose HTTP Client in APIs
+
+Other Changes
+-------------
+
+  * Fix qualifier normalization
+  * Fix analytics signature with query parameters
+
+2.6.1 / 2022-02-01
+==================
+
+  * Fix support of the lowercase response headers
+
 2.6.0 / 2022-01-10
 ==================
 

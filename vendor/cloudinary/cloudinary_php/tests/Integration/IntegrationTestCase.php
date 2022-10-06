@@ -23,11 +23,12 @@ use Cloudinary\Configuration\ConfigUtils;
 use Cloudinary\StringUtils;
 use Cloudinary\Test\CloudinaryTestCase;
 use Cloudinary\Test\Helpers\Addon;
+use Cloudinary\Test\Helpers\Feature;
 use Cloudinary\Test\Unit\Asset\AssetTestCase;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 use ReflectionClass;
 use RuntimeException;
 use Teapot\StatusCode;
@@ -90,6 +91,23 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         }
 
         return ArrayUtils::inArrayI($addOn, explode(',', $cldTestAddOns));
+    }
+
+    /**
+     * Should a certain feature be tested?
+     *
+     * @param string $feature The feature to test.
+     *
+     * @return bool
+     */
+    protected static function shouldTestFeature($feature)
+    {
+        $cldTestFeatures = strtolower(getenv('CLD_TEST_FEATURES'));
+        if ($cldTestFeatures === Feature::ALL) {
+            return true;
+        }
+
+        return ArrayUtils::inArrayI($feature, explode(',', $cldTestFeatures));
     }
 
     /**
@@ -444,7 +462,7 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
                 'file_count'     => IsType::TYPE_INT,
             ]
         );
-        self::assertRegexp('/\.' . $format . '$/', $archive['url']);
+        self::assertMatchesRegularExpression('/\.' . $format . '$/', $archive['url']);
     }
 
     /**
@@ -635,8 +653,9 @@ abstract class IntegrationTestCase extends CloudinaryTestCase
         if ($path) {
             self::assertEquals($path, $parseUrl['path']);
         }
-        if (! empty($values)) {
-            self::assertArraySubset($values, $query);
+
+        foreach ($values as $key => $value) {
+            self::assertSame($value, $query[$key]);
         }
     }
 

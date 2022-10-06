@@ -37,7 +37,7 @@ final class UploadApiTest extends AssetTestCase
         $mockUploadApi->upload(self::TEST_BASE64_IMAGE, ['accessibility_analysis' => true]);
         $lastOptions = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
 
-        self::assertArraySubset(['accessibility_analysis' => '1'], $lastOptions);
+        self::assertEquals('1', $lastOptions['accessibility_analysis']);
     }
 
     /**
@@ -62,8 +62,8 @@ final class UploadApiTest extends AssetTestCase
             '0e493356d8a40b856c4863c026891a4e'
         );
 
-        self::assertContains('asset_id', $url);
-        self::assertContains('version_id', $url);
+        self::assertStringContainsString('asset_id', $url);
+        self::assertStringContainsString('version_id', $url);
     }
 
     /**
@@ -77,7 +77,7 @@ final class UploadApiTest extends AssetTestCase
         $mockUploadApi->upload(self::TEST_BASE64_IMAGE);
         $lastOptions = $mockUploadApi->getApiClient()->getRequestOptions();
 
-        self::assertArraySubset(['chunk_size' => ApiConfig::DEFAULT_CHUNK_SIZE], $lastOptions);
+        self::assertSame(ApiConfig::DEFAULT_CHUNK_SIZE, $lastOptions['chunk_size']);
     }
 
     /**
@@ -91,7 +91,7 @@ final class UploadApiTest extends AssetTestCase
         $mockUploadApi->upload(self::TEST_BASE64_IMAGE, ['chunk_size' => self::TEST_CHUNK_SIZE]);
         $lastOptions = $mockUploadApi->getApiClient()->getRequestOptions();
 
-        self::assertArraySubset(['chunk_size' => self::TEST_CHUNK_SIZE], $lastOptions);
+        self::assertSame(self::TEST_CHUNK_SIZE, $lastOptions['chunk_size']);
     }
 
     /**
@@ -107,7 +107,7 @@ final class UploadApiTest extends AssetTestCase
         $mockUploadApi->upload(self::TEST_BASE64_IMAGE);
         $lastOptions = $mockUploadApi->getApiClient()->getRequestOptions();
 
-        self::assertArraySubset(['chunk_size' => self::TEST_CHUNK_SIZE], $lastOptions);
+        self::assertSame(self::TEST_CHUNK_SIZE, $lastOptions['chunk_size']);
     }
 
     /**
@@ -118,17 +118,18 @@ final class UploadApiTest extends AssetTestCase
     public function testUploadFolderDecoupling()
     {
         $options = [
-            'public_id_prefix'             => self::FD_PID_PREFIX,
-            'asset_folder'                 => self::ASSET_FOLDER,
-            'display_name'                 => self::ASSET_DISPLAY_NAME,
-            'use_filename_as_display_name' => true,
-            'folder'                       => self::NESTED_FOLDER,
+            'public_id_prefix'                     => self::FD_PID_PREFIX,
+            'asset_folder'                         => self::ASSET_FOLDER,
+            'use_asset_folder_as_public_id_prefix' => true,
+            'display_name'                         => self::ASSET_DISPLAY_NAME,
+            'use_filename_as_display_name'         => true,
+            'folder'                               => self::NESTED_FOLDER,
         ];
 
         $mockUploadApi = new MockUploadApi();
         $mockUploadApi->upload(self::TEST_BASE64_IMAGE, $options);
         $lastOptions = $mockUploadApi->getApiClient()->getRequestMultipartOptions();
 
-        self::assertArraySubset($options, $lastOptions);
+        self::assertSubset($options, $lastOptions);
     }
 }

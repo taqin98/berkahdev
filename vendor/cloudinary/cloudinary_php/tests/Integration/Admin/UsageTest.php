@@ -12,7 +12,7 @@ namespace Cloudinary\Test\Integration\Admin;
 
 use Cloudinary\Api\Exception\ApiError;
 use Cloudinary\Test\Integration\IntegrationTestCase;
-use PHPUnit_Framework_Constraint_IsType as IsType;
+use PHPUnit\Framework\Constraint\IsType;
 
 /**
  * Class UsageTest
@@ -70,6 +70,10 @@ final class UsageTest extends IntegrationTestCase
                     'rateLimitRemaining' => IsType::TYPE_INT
                 ]
             );
+
+            self::assertGreaterThan(0, $result->rateLimitAllowed);
+            self::assertGreaterThan(0, $result->rateLimitRemaining);
+            self::assertGreaterThan(0, $result->rateLimitResetAt);
         }
     }
 
