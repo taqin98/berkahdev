@@ -6,7 +6,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
-    <title><?= (ENVIRONMENT !== 'production' || ENVIRONMENT !== 'testing') ? 'development' : ENVIRONMENT ?></title>
+    <title>
+        <?= (ENVIRONMENT == 'production') ? 'prod' : '' ?>
+        <?= (ENVIRONMENT == 'testing') ? 'testing' : '' ?>
+        <?= (ENVIRONMENT == 'development') ? 'development' : '' ?>
+    </title>
     <meta name="description" content="Mobilekit HTML Mobile UI Kit">
     <meta name="keywords" content="bootstrap 4, mobile template, cordova, phonegap, mobile, html, responsive" />
     <link rel="icon" type="image/png" href="/assets/img/favicon.png" sizes="32x32">
@@ -102,7 +106,9 @@
         </div>
         <div class="pageTitle">
             <!-- Rotib Al Hadad -->
-            BA
+            BA 
+            <?= (ENVIRONMENT == 'testing') ? ' (testing)' : '' ?>
+            <?= (ENVIRONMENT == 'development') ? ' (development)' : '' ?>
         </div>
         <div class="right">
             <a href="javascript:;" class="headerButton toggle-searchbox" hidden="">
