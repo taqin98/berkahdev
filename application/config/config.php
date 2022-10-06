@@ -25,6 +25,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 if (ENVIRONMENT == 'production') {
 	$config['base_url'] = 'https://berkahabadi.herokuapp.com/';
+} else if (ENVIRONMENT == 'testing') {
+	$config['base_url'] = 'https://berkahdev.herokuapp.com/';
 } else {
 	$config['base_url'] = 'http://localhost/berkahabadi/';
 }
@@ -384,7 +386,7 @@ $config['encryption_key'] = '';
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-if (ENVIRONMENT == 'production') {
+if (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') {
 	$config['sess_save_path'] = sys_get_temp_dir(); // config deploy heroku
 } else {
 	$config['sess_save_path'] = NULL;	

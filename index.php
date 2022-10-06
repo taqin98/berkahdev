@@ -64,7 +64,7 @@
 		break;
 
 		case "berkahdev.herokuapp.com":
-		define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'staging');
+		define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'testing');
 		break;
 		
 		default:

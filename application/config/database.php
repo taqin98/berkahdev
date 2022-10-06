@@ -97,17 +97,17 @@ $query_builder = TRUE;
 
 
 // config deploy heroku
-if (ENVIRONMENT == 'production' || ENVIRONMENT == 'staging') {
+if (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') {
 	$url = getenv('JAWSDB_MARIA_URL');
 	$dbparts = parse_url($url);
 }
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => (ENVIRONMENT == 'production') ? $dbparts['host'] : 'localhost',
-	'username' => (ENVIRONMENT == 'production') ? $dbparts['user'] : 'root',
-	'password' => (ENVIRONMENT == 'production') ? $dbparts['pass'] : '',
-	'database' => (ENVIRONMENT == 'production') ? ltrim($dbparts['path'],'/') : 'master_berkah',
+	'hostname' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? $dbparts['host'] : 'localhost',
+	'username' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? $dbparts['user'] : 'root',
+	'password' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? $dbparts['pass'] : '',
+	'database' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? ltrim($dbparts['path'],'/') : 'master_berkah',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
