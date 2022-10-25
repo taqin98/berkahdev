@@ -87,9 +87,9 @@ class Gaji extends CI_Controller {
                         $val->tgl_start.' - '. $val->tgl_end,
                         $val->jml,
                         'Rp. '. number_format($val->sub_total),
-                        'Rp. '. number_format($val->pot_bon),
-                        'Rp. '. number_format($val->pot_satu),
-                        'Rp. '. number_format($val->pot_dua),
+                        'Rp. '. number_format($val->pot_bon) . '<br>'.$val->ket_bon,
+                        'Rp. '. number_format($val->pot_satu) . '<br>'.$val->ket_satu,
+                        'Rp. '. number_format($val->pot_dua) . '<br>'.$val->ket_dua,
                         'Rp. '. number_format($gaji_bersih),
                         $button
                     );

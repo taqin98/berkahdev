@@ -1284,7 +1284,9 @@ class Penjualan extends CI_Controller {
 			$year = date("Y",strtotime($tgl));
 
 			$data = $this->PenjualanModel->getDataByMonthYear($month, $year);
-			// var_dump($data[0]);
+			// echo '<pre>';
+			// var_dump(print_r($data));
+			// echo '<pre>'; exit;
 			$Pdf = new FPDF('l','mm','A4');
 			$Pdf->AddPage();
 			$Pdf->SetFont('Arial','',10);
@@ -1333,27 +1335,27 @@ class Penjualan extends CI_Controller {
 			$total_sisa=0;
 			foreach ($data as $key) {
 				$Pdf->SetX(5);
-				$Pdf->Cell(10,$SetLongColum,$nomor++,1,'L',false);
+				$Pdf->Cell(10,$SetLongColum,$nomor++,1,0,'L',false);
 				// $Pdf->SetXY(15,$SetY);
-				$Pdf->Cell(30,$SetLongColum,$key->nama,1,'L',false);
+				$Pdf->Cell(30,$SetLongColum,$key->nama,1,0,'L',false);
 				// $Pdf->SetXY(45,$SetY);
-				$Pdf->Cell(40,$SetLongColum,substr($key->alamat, 0,20) . '...',1,'L',false);
+				$Pdf->Cell(40,$SetLongColum,substr($key->alamat, 0,20) . '...',1,0,'L',false);
 				// $Pdf->SetXY(85,$SetY);
-				$Pdf->Cell(10,$SetLongColum,$key->jenis_pembayaran,1,'C',false);
+				$Pdf->Cell(10,$SetLongColum,$key->jenis_pembayaran,1,0,'C',false);
 				// $Pdf->SetXY(95,$SetY);
 				$total_jumlah += (int) $key->jumlah_produk;
-				$Pdf->Cell(10,$SetLongColum,$key->jumlah_produk,1,'C',false);
+				$Pdf->Cell(10,$SetLongColum,$key->jumlah_produk,1,0,'C',false);
 				$total_bonus += (int) $key->bonus;
-				$Pdf->Cell(10,$SetLongColum,$key->bonus,1,'C',false);
+				$Pdf->Cell(10,$SetLongColum,$key->bonus,1,0,'C',false);
 				// $Pdf->SetXY(115,$SetY);
 				$Pdf->SetFont('Arial','',8);
-				$Pdf->Cell(30,$SetLongColum,'['.$key->harga.']',1,'L',false);
+				$Pdf->Cell(30,$SetLongColum,'['.$key->harga.']',1,0,'L',false);
 				// $Pdf->SetXY(145,$SetY);
 				$Pdf->SetFont('Arial','B',9);
 				$total_kredit_brg += (int) $key->total_brg;
-				$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $key->total_brg),1,'L',false);
+				$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $key->total_brg),1,0,'L',false);
 				$total_dp += (int) $key->dp_pembayaran;
-				$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $key->dp_pembayaran),1,'C',false);
+				$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $key->dp_pembayaran),1,0,'C',false);
 
 				$result = (int) $key->total_brg-(
 					$key->januari+
@@ -1369,9 +1371,9 @@ class Penjualan extends CI_Controller {
 					$key->november+
 					$key->desember);
 				$total_sisa += (int) $result;
-				$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $result),1,'L',false);
+				$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $result),1,0,'L',false);
 				// $Pdf->SetXY(235,$SetY);
-				$Pdf->Cell(25,$SetLongColum,$key->tanggal_transaksi,1,'C',false);
+				$Pdf->Cell(25,$SetLongColum,$key->tanggal_transaksi,1,0,'C',false);
 				// $Pdf->SetXY(260,$SetY);
 				$Pdf->Cell(30,$SetLongColum,$key->ket,1,1,'C',false);
 				// $Pdf->Ln();
@@ -1380,12 +1382,12 @@ class Penjualan extends CI_Controller {
 
 			$Pdf->SetX(5);
 			$Pdf->Cell(90,$SetLongColum,'Total',1,0,'C',false);
-			$Pdf->Cell(10,$SetLongColum,$total_jumlah,1,'C',false);
-			$Pdf->Cell(10,$SetLongColum,$total_bonus,1,'C',false);
-			$Pdf->Cell(30,$SetLongColum,'',1,'L',false);
-			$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $total_kredit_brg),1,'L',false);
-			$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $total_dp),1,'C',false);
-			$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $total_sisa),1,'L',false);
+			$Pdf->Cell(10,$SetLongColum,$total_jumlah,1,0,'C',false);
+			$Pdf->Cell(10,$SetLongColum,$total_bonus,1,0,'C',false);
+			$Pdf->Cell(30,$SetLongColum,'',1,0,'L',false);
+			$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $total_kredit_brg),1,0,'L',false);
+			$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $total_dp),1,0,'C',false);
+			$Pdf->Cell(30,$SetLongColum,'Rp. ' .number_format((float) $total_sisa),1,0,'L',false);
 			$Pdf->Cell(55,$SetLongColum,'',1,1,'C',false);
 
 
