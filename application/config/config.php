@@ -28,7 +28,7 @@ if (ENVIRONMENT == 'production') {
 } else if (ENVIRONMENT == 'testing') {
 	$config['base_url'] = 'https://berkahdev.herokuapp.com/';
 } else {
-	$config['base_url'] = 'http://localhost/berkahabadi/';
+	$config['base_url'] = 'http://localhost/berkahdev/';
 }
 
 /*

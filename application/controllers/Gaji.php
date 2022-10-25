@@ -35,7 +35,7 @@ class Gaji extends CI_Controller {
 
 	public function index()
 	{
-		$data['data'] = $this->GajiModel->getAllGaji();
+		// $data['data'] = $this->GajiModel->getAllGaji();
 		$data['karyawan'] = $this->KaryawanModel->getCustomData();
 		// var_dump($data['data'][0]);
 		// echo "<br><br>";
@@ -43,6 +43,68 @@ class Gaji extends CI_Controller {
 		// echo "<br><br>";
 		// var_dump($data['data'][2]);
 		$this->load->view('admin/gaji_view', $data);
+	}
+
+	public function ajax_get_gaji(){
+		// if ($this->input->is_ajax_request()) {
+			// $draw   = 1;
+			// $start  = 0;
+			// $length = 10;
+			// $search = [];
+			// $order  = [];
+
+			$draw   = $this->input->post('draw');
+			$start  = $this->input->post('start');
+			$length = $this->input->post('length');
+			$search = $this->input->post('search');
+			$order  = $this->input->post('order');
+
+			$json = $this->GajiModel->json_gaji($start, $length, $search['value'], $order[0]['column'], $order[0]['dir']);
+			// $json = $this->GajiModel->json_gaji($start, $length, '', '', '');
+
+			// var_dump($json); exit;
+
+            $filtered   = $json[1];
+            $total      = $json[1];
+            $json_data  = $json[0];
+            $data       = [];
+
+            if (!empty($json_data)) {
+                $no = $start + 1;
+                foreach ($json_data as $row => $val) {
+                	$gaji_bersih = $val->sub_total - ($val->pot_bon+$val->pot_satu+$val->pot_dua);
+
+                    $edit = '<a href="'. base_url('gaji/detail/') . $val->kd . '/' . $val->tgl_start .'" class="btn btn-warning btn-sm">Detail</a>';
+                    $print = '<a href="'. base_url('gaji/print/') . $val->kd . '/' . $val->tgl_start .'" class="btn btn-success btn-sm">Print</a>';
+                    $delete = '<a href="'. base_url('gaji/delete/') . $val->kd . '/' . $val->tgl_start .'" class="btn btn-danger btn-sm">
+                                    <img src="'. base_url('assets/icons/trash.svg') .'" alt="Bootstrap" width="20" height="20" class="m-1">Delete</a>';
+                    
+                    $button = $edit.$print.$delete;
+
+                    $data[$row] = array(
+                        $no++,
+                        $val->kd,
+                        $val->tgl_start.' - '. $val->tgl_end,
+                        $val->jml,
+                        'Rp. '. number_format($val->sub_total),
+                        'Rp. '. number_format($val->pot_bon),
+                        'Rp. '. number_format($val->pot_satu),
+                        'Rp. '. number_format($val->pot_dua),
+                        'Rp. '. number_format($gaji_bersih),
+                        $button
+                    );
+                }
+            }
+
+            $result = array(
+                'draw' => $draw,
+                'recordsFiltered' => $filtered,
+                'recordsTotal' => $total,
+                'data' => $data,
+            );
+
+			echo json_encode($result);
+		// }
 	}
 
 	public function detail($id, $start)

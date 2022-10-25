@@ -4,6 +4,82 @@ class GajiModel extends CI_Model
 	private $_table = 'tb_gaji';
 
 
+	public function json_gaji($start=0, $length=0, $search='', $column='', $dir='') {
+		// var_dump($start, $length, $search, $column, $dir); exit;
+        $condition = '';
+		if ($search != '') {
+			$condition .= " WHERE (z.kd LIKE '%$search%'
+                            OR z.jml LIKE '%$search%'
+                            ";
+		} else {
+            // $condition .= " WHERE (c.delete_at IS NULL)";
+            // $condition .= " ";
+        }
+
+		$order = '';
+		if ($column != '' && $dir != '') {
+			switch ($column) {
+				case '0':
+					$col = 'z.kd';
+					break;
+				case '1':
+					$col = 'z.jml';
+					break;
+				default:
+					$col = '';
+					break;
+			}
+
+			if ($col != '') {
+				$order .= " ORDER BY $col $dir ";
+			}
+		} 
+
+		$limit = "LIMIT $start, $length";
+		if($length == '-1'){
+			$limit = "";
+		}
+
+		$filtered = $this->db->query("SELECT z.* FROM (SELECT tb_penjualan.kode_karyawan as kd, 
+
+		(SELECT SUM(tb_penjualan.jumlah_produk) from tb_penjualan WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end) as jml, 
+			tb_gaji.tgl_start, tb_gaji.tgl_end,
+
+		(SELECT SUM(    
+		CASE
+			WHEN tb_penjualan.jenis_pembayaran = 'K' THEN tb_penjualan_detail.qty*tb_barang.komisi_kredit
+			ELSE tb_penjualan_detail.qty*tb_barang.komisi_cash
+		END) FROM tb_penjualan, tb_penjualan_detail, tb_barang WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan_detail.kode_brg=tb_barang.kode_brg AND tb_penjualan.kode_penjualan=tb_penjualan_detail.kode_penjualan AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end
+		) as sub_total,
+
+		tb_gaji.pot_bon, tb_gaji.ket_bon, tb_gaji.pot_satu, tb_gaji.ket_satu,
+
+		tb_gaji.pot_dua, tb_gaji.ket_dua
+		FROM tb_penjualan, tb_penjualan_detail, tb_barang, tb_gaji WHERE tb_penjualan.kode_karyawan=tb_gaji.kode_karyawan GROUP by sub_total) z
+                $condition
+                $order $limit
+                ")->result();
+		$total = $this->db->query("SELECT z.* FROM (SELECT tb_penjualan.kode_karyawan as kd, 
+
+		(SELECT SUM(tb_penjualan.jumlah_produk) from tb_penjualan WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end) as jml, 
+			tb_gaji.tgl_start, tb_gaji.tgl_end,
+
+		(SELECT SUM(    
+		CASE
+			WHEN tb_penjualan.jenis_pembayaran = 'K' THEN tb_penjualan_detail.qty*tb_barang.komisi_kredit
+			ELSE tb_penjualan_detail.qty*tb_barang.komisi_cash
+		END) FROM tb_penjualan, tb_penjualan_detail, tb_barang WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan_detail.kode_brg=tb_barang.kode_brg AND tb_penjualan.kode_penjualan=tb_penjualan_detail.kode_penjualan AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end
+		) as sub_total,
+
+		tb_gaji.pot_bon, tb_gaji.ket_bon, tb_gaji.pot_satu, tb_gaji.ket_satu,
+
+		tb_gaji.pot_dua, tb_gaji.ket_dua
+		FROM tb_penjualan, tb_penjualan_detail, tb_barang, tb_gaji WHERE tb_penjualan.kode_karyawan=tb_gaji.kode_karyawan GROUP by sub_total) z
+                $condition ")->num_rows();
+
+        return [$filtered, $total];
+    }
+
 	public function getAllGaji()
 	{
 		//SKRIP LAMA

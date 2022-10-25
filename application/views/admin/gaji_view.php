@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="<?= base_url('/assets/css/helper.css') ?>" async>
     <link rel="stylesheet" href="<?= base_url('/assets/css/bootstrap-icons.css') ?>" async>
     <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/icons-style.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <!-- <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js" data-stencil-namespace="ionicons"></script>
     <script nomodule="" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js" data-stencil-namespace="ionicons"></script> -->
     <!-- <link rel="manifest" href="/__manifest.json"> -->
@@ -120,96 +121,98 @@
                 <button type="button" id="clickModal" class="btn btn-success btn-sm ml-2" data-toggle="modal" data-target="#DialogForm">Tambah Data</button>
             </div>
             <div class="modal fade dialogbox" id="DialogForm" data-bs-backdrop="static" tabindex="-1" style="display: none;" aria-hidden="true">
-            	<div class="modal-dialog" role="document">
-            		<div class="modal-content" style="max-width: 500px;">
-            			<div class="modal-header">
-            				<h5 class="modal-title">Form Penggajian</h5>
-            			</div>
-            			<form method="POST"action="<?= base_url('gaji/create') ?>">
-            				<div class="modal-body text-start mb-2">
-            					<div class="form-group basic pt-0 pb-0">
-            						<div class="input-wrapper">
-            							<label class="form-label float-left mb-0" for="email1">Kode Karyawan</label>
-            							<select name="kode_kar" class="form-control js-kar">
-                							<option>-- Pilih Karyawan --</option>
-                							<?php
-                							foreach ($karyawan as $key): ?>
-                								<option value="<?= $key->kode_karyawan; ?>"><?= $key->kode_karyawan; ?> - <?= $key->nama_karyawan; ?></option>
-                							<?php endforeach; ?>
-                						</select>
-            						</div>
-            					</div>
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="max-width: 500px;">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Form Penggajian</h5>
+                        </div>
+                        <form method="POST"action="<?= base_url('gaji/create') ?>">
+                            <div class="modal-body text-start mb-2">
+                                <div class="form-group basic pt-0 pb-0">
+                                    <div class="input-wrapper">
+                                        <label class="form-label float-left mb-0" for="email1">Kode Karyawan</label>
+                                        <select name="kode_kar" class="form-control js-kar">
+                                            <option>-- Pilih Karyawan --</option>
+                                            <?php
+                                            foreach ($karyawan as $key): ?>
+                                                <option value="<?= $key->kode_karyawan; ?>"><?= $key->kode_karyawan; ?> - <?= $key->nama_karyawan; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
 
-            					<div class="row">
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Date Start</label>
-            								<input type="date" name="tgl_awal" class="form-control">
-            							</div>
-            						</div>
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Date End</label>
-            								<input type="date" name="tgl_akhir" class="form-control">
-            							</div>
-            						</div>
-            					</div>
-            					<div class="row">
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Pot. Bon</label>
-            								<input type="number" name="pot_bon" class="form-control">
-            							</div>
-            						</div>
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Keterangan</label>
-            								<input type="text" name="ket_bon" class="form-control">
-            							</div>
-            						</div>
-            					</div>
-            					<div class="row">
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Potongan 1</label>
-            								<input type="number" name="pot_satu" class="form-control">
-            							</div>
-            						</div>
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Keterangan</label>
-            								<input type="text" name="ket_satu" class="form-control">
-            							</div>
-            						</div>
-            					</div>
-            					<div class="row">
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Potongan 2</label>
-            								<input type="number" name="pot_dua" class="form-control">
-            							</div>
-            						</div>
-            						<div class="form-group basic col pt-0 pb-0">
-            							<div class="input-wrapper">
-            								<label class="form-label float-left mb-0" for="tgl">Keterangan</label>
-            								<input type="text" name="ket_dua" class="form-control">
-            							</div>
-            						</div>
-            					</div>
-            				</div>
-            				<div class="modal-footer">
-            					<div class="btn-inline">
-            						<button type="button" class="btn btn-text-secondary" data-dismiss="modal">CLOSE</button>
-            						<input type="submit" class="btn btn-text-primary" value="Create">
-            					</div>
-            				</div>
-            			</form>
-            		</div>
-            	</div>
+                                <div class="row">
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Date Start</label>
+                                            <input type="date" name="tgl_awal" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Date End</label>
+                                            <input type="date" name="tgl_akhir" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Pot. Bon</label>
+                                            <input type="number" name="pot_bon" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Keterangan</label>
+                                            <input type="text" name="ket_bon" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Potongan 1</label>
+                                            <input type="number" name="pot_satu" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Keterangan</label>
+                                            <input type="text" name="ket_satu" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Potongan 2</label>
+                                            <input type="number" name="pot_dua" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group basic col pt-0 pb-0">
+                                        <div class="input-wrapper">
+                                            <label class="form-label float-left mb-0" for="tgl">Keterangan</label>
+                                            <input type="text" name="ket_dua" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="btn-inline">
+                                    <button type="button" class="btn btn-text-secondary" data-dismiss="modal">CLOSE</button>
+                                    <input type="submit" class="btn btn-text-primary" value="Create">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div class="wide-block ml-2 mr-2 p-0">
+                
+
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table" id="table-gaji">
                         <thead>
                             <tr>
                                 <th scope="col">No</th>
@@ -221,33 +224,9 @@
                                 <th scope="col text-center">KET2</th>
                                 <th scope="col text-center">KET3</th>
                                 <th scope="col text-center">Gaji Terima</th>
-                                <th scope="col text-center" colspan="2">AKsi</th>
+                                <th scope="col text-center">AKsi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        <?php
-                            $nomor = 0;
-                            foreach ($data as $key): ?>
-                            <tr>
-                                <td scope="row"><?php $nomor++; echo $nomor; ?></td>
-                                <?php $gaji_bersih = $key->sub_total - ($key->pot_bon+$key->pot_satu+$key->pot_dua); ?>
-                                <td scope="row"><?= $key->kd; ?></td>
-                                <td scope="row"><?= $key->tgl_start .' - '. $key->tgl_end; ?></td>
-                                <td scope="row"><?= $key->jml; ?></td>
-                                <td scope="row">Rp. <?= number_format($key->sub_total); ?></td>
-                                <td scope="row"><?= $key->pot_bon; ?></td>
-                                <td scope="row"><?= $key->pot_satu; ?></td>
-                                <td scope="row"><?= $key->pot_dua; ?></td>
-                                <td scope="row">Rp <?= number_format($gaji_bersih); ?></td>
-                                <td scope="row"><a href="<?= base_url('gaji/detail/') . $key->kd . '/' . $key->tgl_start ?>" class="btn btn-warning btn-sm">
-                                Detail</a></td>
-                                <td scope="row"><a href="<?= base_url('gaji/print/') . $key->kd . '/' . $key->tgl_start ?>" class="btn btn-success btn-sm">
-                                Print</a></td>
-                                <td scope="row"><a href="<?= base_url('gaji/delete/') . $key->kd . '/' . $key->tgl_start ?>" class="btn btn-danger btn-sm">
-                                    <img src="<?= base_url('assets/icons/trash.svg') ?>" alt="Bootstrap" width="20" height="20" class="m-1">Delete</a></td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
                     </table>
                 </div>
 
@@ -282,8 +261,24 @@
     <!-- Ionicons -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.0.0/dist/ionicons/ionicons.esm.js" async></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.0.0/dist/ionicons/ionicons.js" async></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
-    	$("#clickModal").button("toggle");
+        $("#clickModal").button("toggle");
+        let base_url = "<?= base_url() ?>";
+        $(document).ready( function () {
+
+            let table = $("#table-gaji").DataTable({
+                processing: true,
+                serverSide: true,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                ajax: {
+                    url : base_url + 'gaji/ajax_get_gaji',
+                    type: 'post',
+                    dataType: 'json'
+                },
+                order: [[ 1, 'asc' ]],
+            });
+        } );
     </script>
 </body>
 </html>
