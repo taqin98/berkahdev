@@ -40,41 +40,49 @@ class GajiModel extends CI_Model
 			$limit = "";
 		}
 
-		$filtered = $this->db->query("SELECT z.* FROM (SELECT tb_penjualan.kode_karyawan as kd, 
+		$filtered = $this->db->query("SELECT z.* FROM (SELECT a.kode_karyawan as kd, a.kode_penjualan,
+SUM(b.jumlah_produk) as jml, a.tgl_start, a.tgl_end,
+SUM(CASE
+			WHEN b.jenis_pembayaran = 'K' THEN c.qty * d.komisi_kredit
+			ELSE c.qty * d.komisi_cash
+		END) as sub_total,
+a.pot_bon,
+a.pot_satu,
+a.pot_dua,
 
-		(SELECT SUM(tb_penjualan.jumlah_produk) from tb_penjualan WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end) as jml, 
-			tb_gaji.tgl_start, tb_gaji.tgl_end,
-
-		(SELECT SUM(    
-		CASE
-			WHEN tb_penjualan.jenis_pembayaran = 'K' THEN tb_penjualan_detail.qty*tb_barang.komisi_kredit
-			ELSE tb_penjualan_detail.qty*tb_barang.komisi_cash
-		END) FROM tb_penjualan, tb_penjualan_detail, tb_barang WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan_detail.kode_brg=tb_barang.kode_brg AND tb_penjualan.kode_penjualan=tb_penjualan_detail.kode_penjualan AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end
-		) as sub_total,
-
-		tb_gaji.pot_bon, tb_gaji.ket_bon, tb_gaji.pot_satu, tb_gaji.ket_satu,
-
-		tb_gaji.pot_dua, tb_gaji.ket_dua
-		FROM tb_penjualan, tb_penjualan_detail, tb_barang, tb_gaji WHERE tb_penjualan.kode_karyawan=tb_gaji.kode_karyawan GROUP by sub_total) z
+a.ket_bon,
+a.ket_satu,
+a.ket_dua
+FROM 
+tb_gaji a
+INNER JOIN tb_penjualan b ON a.kode_penjualan = b.`kode_penjualan`
+INNER JOIN tb_penjualan_detail c ON c.kode_penjualan = b.kode_penjualan
+INNER JOIN tb_barang d ON d.`kode_brg` = c.`kode_brg`
+GROUP BY kd, MONTH(a.tgl_start)
+) z
                 $condition
                 $order $limit
                 ")->result();
-		$total = $this->db->query("SELECT z.* FROM (SELECT tb_penjualan.kode_karyawan as kd, 
+		$total = $this->db->query("SELECT z.* FROM (SELECT a.kode_karyawan as kd, a.kode_penjualan,
+SUM(b.jumlah_produk) as jml, a.tgl_start, a.tgl_end,
+SUM(CASE
+			WHEN b.jenis_pembayaran = 'K' THEN c.qty * d.komisi_kredit
+			ELSE c.qty * d.komisi_cash
+		END) as sub_total,
+a.pot_bon,
+a.pot_satu,
+a.pot_dua,
 
-		(SELECT SUM(tb_penjualan.jumlah_produk) from tb_penjualan WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end) as jml, 
-			tb_gaji.tgl_start, tb_gaji.tgl_end,
-
-		(SELECT SUM(    
-		CASE
-			WHEN tb_penjualan.jenis_pembayaran = 'K' THEN tb_penjualan_detail.qty*tb_barang.komisi_kredit
-			ELSE tb_penjualan_detail.qty*tb_barang.komisi_cash
-		END) FROM tb_penjualan, tb_penjualan_detail, tb_barang WHERE tb_penjualan.kode_karyawan=kd AND tb_penjualan_detail.kode_brg=tb_barang.kode_brg AND tb_penjualan.kode_penjualan=tb_penjualan_detail.kode_penjualan AND tb_penjualan.tanggal_transaksi BETWEEN tb_gaji.tgl_start AND tb_gaji.tgl_end
-		) as sub_total,
-
-		tb_gaji.pot_bon, tb_gaji.ket_bon, tb_gaji.pot_satu, tb_gaji.ket_satu,
-
-		tb_gaji.pot_dua, tb_gaji.ket_dua
-		FROM tb_penjualan, tb_penjualan_detail, tb_barang, tb_gaji WHERE tb_penjualan.kode_karyawan=tb_gaji.kode_karyawan GROUP by sub_total) z
+a.ket_bon,
+a.ket_satu,
+a.ket_dua
+FROM 
+tb_gaji a
+INNER JOIN tb_penjualan b ON a.kode_penjualan = b.`kode_penjualan`
+INNER JOIN tb_penjualan_detail c ON c.kode_penjualan = b.kode_penjualan
+INNER JOIN tb_barang d ON d.`kode_brg` = c.`kode_brg`
+GROUP BY kd, MONTH(a.tgl_start)
+) z
                 $condition ")->num_rows();
 
         return [$filtered, $total];
