@@ -97,17 +97,34 @@ $query_builder = TRUE;
 
 
 // config deploy heroku
-if (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') {
-	$url = getenv('JAWSDB_MARIA_URL');
-	$dbparts = parse_url($url);
+// if (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') {
+// 	$url = getenv('JAWSDB_MARIA_URL');
+// 	$dbparts = parse_url($url);
+// }
+
+$dbconn['localhost'] 	= 'localhost';
+$dbconn['user'] 		= 'root';
+$dbconn['pass'] 		= '';
+$dbconn['db_name'] 		= 'master_berkah';
+
+if (ENVIRONMENT == 'production') {
+	$dbconn['localhost'] 	= 'localhost';
+	$dbconn['user'] 		= 'berkahab_root';
+	$dbconn['pass'] 		= 'Bismilahiso7';
+	$dbconn['db_name'] 		= 'berkahab_master';
+} else if (ENVIRONMENT == 'testing') {
+	$dbconn['localhost'] 	= 'localhost';
+	$dbconn['user'] 		= 'berkahab_staging';
+	$dbconn['pass'] 		= 'Bismilahiso7';
+	$dbconn['db_name'] 		= 'berkahab_staging';
 }
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? $dbparts['host'] : 'localhost',
-	'username' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? $dbparts['user'] : 'root',
-	'password' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? $dbparts['pass'] : '',
-	'database' => (ENVIRONMENT == 'production' || ENVIRONMENT == 'testing') ? ltrim($dbparts['path'],'/') : 'master_berkah',
+	'hostname' => $dbconn['localhost'],
+	'username' => $dbconn['user'],
+	'password' => $dbconn['pass'],
+	'database' => $dbconn['db_name'],
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
