@@ -24,9 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 if (ENVIRONMENT == 'production') {
-	$config['base_url'] = 'https://berkahabadi.herokuapp.com/';
+	$config['base_url'] = 'https://berkahabadi.web.id/';
 } else if (ENVIRONMENT == 'testing') {
-	$config['base_url'] = 'https://berkahdev.herokuapp.com/';
+	$config['base_url'] = 'https://tester.berkahabadi.web.id/';
 } else {
 	$config['base_url'] = 'http://localhost/berkahdev/';
 }
