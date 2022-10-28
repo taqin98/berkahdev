@@ -110,21 +110,24 @@
              
             <div class="wide-block pb-1 pt-1">
                 <?php 
-                echo '<pre>';
-                print_r($penjualan_detail[0]->harga_pcs);
-                echo '</pre>';
+                // echo '<pre>';
+                // print_r($penjualan_detail);
+                // echo '</pre>';
                 ?>
-                <form method="POST" onsubmit="if(!confirm('Apakah Anda yakin Data Sudah Benar?')){return false;}" action="<?= base_url('penjualan/update/') . $data->kode_penjualan ?>">
-                	<div class="list-barang row p-1 row_0" id="1" >
+                <form method="POST" action="<?= base_url('penjualan/update/') . $data->kode_penjualan ?>">
+                    <?php 
+                    $idx = 0;
+                    foreach($penjualan_detail as $index => $val)  : ?>
+                	<div class="row row_<?= $idx ?> p-1" id="1" >
                 		<div class="form-group boxed col pr-1">
                 			<div class="input-wrapper">
                 				<label class="label" for="name5">Nama Barang</label>
-                				<select name="kode_brg[]" class="form-control js-select-brg kode_brg_0" required="">
+                				<select name="kode_brg[]" class="form-control js-select-brg kode_brg_<?= $idx ?>" required="">
                 					<?php
                 					foreach ($barang as $key){
-                						if ($key->kode_brg == $penjualan_detail[0]->kode_brg) {
+                						if ($key->kode_brg == $val->kode_brg) {
                 							?>
-                							<option value="<?= $key->kode_brg; ?>"><?= $key->kode_brg; ?> - <?= $key->nama_brg; ?></option>
+                							<option selected value="<?= $key->kode_brg; ?>"><?= $key->kode_brg; ?> - <?= $key->nama_brg; ?></option>
                 							<?php
                 						} else {
                 							?>
@@ -139,93 +142,45 @@
                 		<div class="form-group boxed col pr-1">
                 			<div class="input-wrapper">
                 				<label class="label" for="name5">Qty</label>
-                				<input type="text" name="qty[]" class="form-control qty_0" onkeyup="hitungSub(0)" required="" value="<?= $penjualan_detail[0]->qty ?>">
+                				<input type="text" name="qty[]" class="form-control qty_<?= $idx ?>" onkeyup="hitungSub(0)" required="" value="<?= $val->qty ?>">
                 			</div>
                 		</div>
                 		<div class="form-group boxed col pr-1">
                 			<div class="input-wrapper">
                 				<label class="label" for="name5">Harga</label>
-                				<input type="text" name="harga_pcs[]" class="form-control harga_pcs_0 disabled" readonly="" value="<?= $penjualan_detail[0]->harga_pcs ?>">
+                				<input type="text" name="harga_pcs[]" class="form-control harga_pcs_<?= $idx ?> disabled" readonly="" value="<?= $val->harga_pcs ?>">
                 			</div>
                 		</div>
                 		<div class="form-group boxed col pr-1">
                 			<div class="input-wrapper">
                 				<label class="label" for="name5">Su btotal</label>
                 				<div class="input-group">
-                					<input type="text" name="subtotal[]" class="form-control subtotal_0 disabled" readonly="" value="<?= $penjualan_detail[0]->sub_total ?>">
-                					<span class="btn btn-outline-secondary" onclick="updateSub(0)">
+                					<input type="text" name="subtotal[]" class="form-control subtotal_<?= $idx ?> disabled" readonly="" value="<?= $val->sub_total ?>">
+                					<span class="btn btn-outline-secondary" onclick="updateSub(<?= $idx ?>)">
                 						<img src="<?= base_url('assets/icons/arrow-repeat.svg') ?>" class="icons">
                 					</span>
                 				</div>
                 			</div>
                 		</div>
+                        <?php if($idx > 0) : ?>
+                        <div class="form-group boxed col-1 pt-0">
+                            <div class="input-wrapper">
+                                <label class="label" for="name5">&nbsp;</label>
+                                <a class="btn btn-danger btn-remove form-control" id="<?= $idx ?>" onclick="hitungSubTot(<?= $idx ?>)">Delete</a></div>
+                        </div>
+                        <?php else: ?>
                 		<div class="form-group boxed col-1">
                 			<div class="input-wrapper">
                 				<label class="label" for="name5">&nbsp;</label>
                 				<a class="btn btn-success form-control" id="addInput">Add</a>
                 			</div>
                 		</div>
+                    <?php endif; ?>
                 	</div>
-                	<div id="dynamicForm">
-                        <?php 
-                        $idx = 0;
-                        foreach($penjualan_detail as $index => $val)  : ?>
-                        <?php if($penjualan_detail[0]->detail_id !== $val->detail_id) : ?>
-                        <div class="list-barang row row_<?= $idx ?> p-1" >
-                            <div class="form-group boxed col pr-1">
-                                <div class="input-wrapper">
-                                    <label class="label" for="name5">Nama Barang</label>
-                                    <select name="kode_brg[]" class="form-control js-select-brg kode_brg_<?= $idx ?>" required="">
-                                        <?php
-                                        foreach ($barang as $key){
-                                            if ($key->kode_brg == $val->kode_brg) {
-                                                ?>
-                                                <option selected value="<?= $key->kode_brg; ?>"><?= $key->kode_brg; ?> - <?= $key->nama_brg; ?></option>
-                                                <?php
-                                            } else {
-                                                ?>
-                                                <option value="<?= $key->kode_brg; ?>"><?= $key->kode_brg; ?> - <?= $key->nama_brg; ?></option>
-                                                <?php
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group boxed col pr-1">
-                                <div class="input-wrapper">
-                                    <label class="label" for="name5">Qty</label>
-                                    <input type="text" name="qty[]" class="form-control qty_<?= $idx ?>" onkeyup="hitungSub(<?= $idx ?>)" required="" value="<?= $val->qty ?>">
-                                </div>
-                            </div>
-                            <div class="form-group boxed col pr-1">
-                                <div class="input-wrapper">
-                                    <label class="label" for="name5">Harga</label>
-                                    <input type="text" name="harga_pcs[]" class="form-control harga_pcs_<?= $idx ?> disabled" readonly="" value="<?= $val->harga_pcs ?>">
-                                </div>
-                            </div>
-                            <div class="form-group boxed col pr-1">
-                                <div class="input-wrapper">
-                                    <label class="label" for="name5">Su btotal</label>
-                                    <div class="input-group">
-                                        <input type="text" name="subtotal[]" class="form-control subtotal_<?= $idx ?> disabled" readonly="" value="<?= $val->sub_total ?>">
-                                        <span class="btn btn-outline-secondary" onclick="updateSub(<?= $idx ?>)">
-                                            <img src="<?= base_url('assets/icons/arrow-repeat.svg') ?>" class="icons">
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group boxed col-1 pt-0">
-                                <div class="input-wrapper">
-                                    <label class="label" for="name5">&nbsp;</label>
-                                    <a class="btn btn-danger btn-remove form-control" id="<?= $idx ?>" onclick="hitungSubTot(<?= $idx ?>)">Delete</a></div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                        <?php 
-                            $idx += 1;
-                            endforeach; ?>   
-                    </div>
+                    <?php 
+                        $idx += 1;
+                        endforeach; ?>
+                	<div id="dynamicForm"></div>
                 	<div class="row p-1">
                 		<div class="form-group boxed col mr-1">
                 			<div class="form-group boxed">
@@ -284,7 +239,7 @@
                 						<div class="form-group boxed">
                 							<div class="input-wrapper">
                 								<label class="label" for="name5">Jumlah Pcs</label>
-                								<input type="text" name="jml" id="eJmlPcs" class="form-control disabled" readonly="" placeholder="Jml" value="<?= $penjualan_detail[0]->total_produk ?>">
+                								<input type="text" name="jml" id="eJmlPcs" class="form-control disabled" readonly="" placeholder="Jml">
                 							</div>
                 						</div>
                 					</div>
@@ -411,12 +366,92 @@
     <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap.min.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/select2.min.js'); ?>"></script>
     <script type="text/javascript">
-    	var x=parseInt("<?= $idx ?>") -1;
+    	var x= parseInt("<?= $idx ?>");
+
     </script>
     <script type="text/javascript">
     	
     	console.log('BERITA', <?= count($penjualan_detail) ?>);
     	$(document).ready(function() {
+    		//var body = 
+    		if (<?= count($penjualan_detail) ?> == 1) {
+    			console.log('HIDEN');
+    			$('#dynamicForm').append('');
+    		} else {
+    			console.log('SHOW');
+
+    		for (var i = 1; i < <?= count($penjualan_detail) ?>; i++) {
+    			$('#dynamicForm').append('<div class="row row_'+i+' p-1"><div class="form-group boxed col pr-1 pt-0">'+
+                			'<div class="input-wrapper">'+
+                				'<label class="label" for="name5">Nama Barang</label>'+
+                				'<select name="kode_brg[]" readonly="" class="form-control kode_brg_'+i+' js-select-brg_'+i+'" onchange="getHarga('+i+')">'+
+                							'<option value="">-- Pilih Barang --</option>'+
+                							<?php
+                							$index = 0;
+                							foreach ($barang as $key): ?>
+                								<?php
+                								if (count($penjualan_detail) > 1) {
+                									if ($key->kode_brg == $penjualan_detail[$index]->kode_brg) {
+                										?>
+                										'<option selected value="<?= $key->kode_brg; ?>"><?= $key->kode_brg; ?> - <?= $key->nama_brg; ?></option>'+
+                										<?php
+                									} 
+                								}
+                								
+
+                								?>
+                								
+                							<?php $index++; endforeach; ?>
+                						'</select>'+
+                			'</div>'+
+                		'</div>'+
+                		'<div class="form-group boxed col pr-1 pt-0">'+
+                			'<div class="input-wrapper">'+
+                				'<label class="label" for="name5">Qty</label>'+
+                				<?php if (count($penjualan_detail) > 1) {
+                					?>
+                					'<input type="text" name="qty[]" class="form-control qty_'+i+'" onkeyup="hitungSubTot('+i+')" value="<?= $penjualan_detail[$index-1]->qty ?>">'+
+                					<?php
+                				}
+                				?>
+                				
+                			'</div>'+
+                		'</div>'+
+                		'<div class="form-group boxed col pr-1 pt-0">'+
+                			'<div class="input-wrapper">'+
+                				'<label class="label" for="name5">Harga</label>'+
+                				<?php
+                				if (count($penjualan_detail) > 1) {
+                					$brg = $this->db->get_where('tb_barang', array('kode_brg' => $penjualan_detail[$index-1]->kode_brg))->row();
+                				}
+                				?>
+                				'<input type="text" name="harga_pcs[]" class="form-control disabled harga_pcs_'+i+'" readonly="" value="<?= $brg->harga_pcs  ?>">'+
+                			'</div>'+
+                		'</div>'+
+                		'<div class="form-group boxed col pr-1 pt-0">'+
+                			'<label class="label" for="name5">Su btotal</label>'+
+                			'<div class="input-wrapper">'+
+                				'<div class="input-group">'+
+                				'<input type="text" name="subtotal[]" class="form-control disabled subtotal_'+i+'" readonly="">'+
+                				'<span class="btn btn-outline-secondary" onclick="updateSub('+i+')">'+
+                						'<img src="<?= base_url('assets/icons/arrow-repeat.svg') ?>" class="icons">'+
+                					'</span>'+
+                				'</div>'+
+                			'</div>'+
+                		'</div>'+
+                		'<div class="form-group boxed col-1 pt-0">'+
+                			'<div class="input-wrapper">'+
+                				'<label class="label" for="name5">&nbsp;</label>'+
+                				'<a class="btn btn-danger btn-remove form-control" id="'+i+'" onclick="hitungSubTot('+i+')">Delete</a>'+
+                			'</div>'+
+                		'</div>'+
+                		'</div>');
+
+    		
+    		x=i;
+    	}
+    	
+    	}
 				
 				
 				
@@ -456,7 +491,7 @@
     		i++;
     		x= i;
 					//x += 1;
-					$('#dynamicForm').append('<div class="list-barang row row_'+i+' p-1"><div class="form-group boxed col pr-1 pt-0">'+
+					$('#dynamicForm').append('<div class="row row_'+i+' p-1"><div class="form-group boxed col pr-1 pt-0">'+
 						'<div class="input-wrapper">'+
 						'<label class="label" for="name5">Nama Barang</label>'+
 						'<select name="kode_brg[]" class="form-control kode_brg_'+i+' js-select-brg_'+i+'" onchange="getHarga('+i+')">'+
@@ -499,10 +534,10 @@
 						'</div>'+
 						'</div>');
 		});
-    	$(document).on('click', '.btn-remove', (evt) => {
+    	$(document).on('click', '.btn-remove', () => {
 
-    		var btn_remove = $(evt.target).attr('id');
-    		console.log('dsfdsf',btn_remove );
+    		var btn_remove = $('.btn-remove').attr("id");
+    		console.log('dsfdsf',btn_remove);
     		$('.row_'+btn_remove).remove();
     		x--;
     	});
@@ -527,7 +562,7 @@
     					totalQty += parseInt($('.qty_'+j).val());
     					total += parseInt($('.qty_'+j).val() * $('.harga_pcs_'+j).val());
 
-    					console.log('FOR TOTAL QTY [countPcsAndHrg]', totalQty);
+    					console.log('FOR TOTAL QTY', totalQty);
     					console.log('FOR TOTAL', total);
     				}
     				$('#eJmlPcs').val(totalQty);
@@ -544,8 +579,8 @@
     				// hargaTotalBrg = parseInt($('#eJmlPcs').val()) * parseInt($('#eHrg').val());
     				// $('#eTotalBrg').val(hargaTotalBrg);
     			}
+    			
     		}
-
     	}
 
     	var timerSub=0;
@@ -554,34 +589,42 @@
     		timerSub = setTimeout(countPcsAndHrg, 1000);
 
     		function countPcsAndHrg() {
-                let __getQTY = parseInt($('.qty_'+iNumber).val());
-                let __getHrgPcs = parseInt( $('.harga_pcs_'+iNumber).val() );
-    			let __count_subTotal_row =  __getQTY * __getHrgPcs;
+    			var subPertama = $('.qty_'+iNumber).val() * $('.harga_pcs_'+iNumber).val();
+    			$('.subtotal_'+iNumber).val(subPertama);
+    			var total=0;
+    			var totalQty=0;
+    			for(var j=0; j <= x; j++){
+    				total += parseInt($('.subtotal_'+j).val());
 
-    			$('.subtotal_'+iNumber).val(__count_subTotal_row);
+    				totalQty += parseInt($('.qty_'+j).val());
+    				console.log('FOR TOTAL QTY', totalQty);
+    			}
+    			$('#eJmlPcs').val(totalQty);
+    			// $('#eHrg').val(total);
 
-                let __CountQTY = 0;
-                $('.list-barang').find('input[name="qty[]"]').each(function(idx, row) {
-                    __CountQTY += parseInt(row.value);
-                })
+    			var hargaTotalBrg=0;
+    			total=0; totalQty=0;
+    			// hargaTotalBrg = parseInt($('#eJmlPcs').val()) * parseInt($('#eHrg').val());
+    			// $('#eTotalBrg').val(hargaTotalBrg);
 
-    			$('#eJmlPcs').val(__CountQTY);
+    			// console.log('TOTAL QTY', totalQty + parseInt($('.qty_0').val()), i);
+    			// console.log('TOTAL GEDE', total + parseInt($('.subtotal_0').val()), i);
     		}
-
-            hitungTotalKredit();
     	}
 
     	function updateSub(iNumber) {
-    		
-            let __getQTY = parseInt($('.qty_'+iNumber).val());
-            let __getHrgPcs = parseInt( $('.harga_pcs_'+iNumber).val() );
-            let __count_subTotal_row =  __getQTY * __getHrgPcs;
-
-            $('.subtotal_'+iNumber).val(__count_subTotal_row);
-           
     		hitungTotalKredit();
-            hitungSubTot(iNumber);
+    		var subPertama = $('.qty_'+iNumber).val() * $('.harga_pcs_'+iNumber).val();
+    		$('.subtotal_'+iNumber).val(subPertama);
+    		var total=0;
+    		for(var j=0; j <= x; j++){
+    			total += parseInt($('.subtotal_'+j).val());
+    		}
+    		// $('#eHrg').val(total);
 
+    		var hargaTotalBrg = 0;
+    		// hargaTotalBrg = parseInt($('#eJmlPcs').val()) * parseInt($('#eHrg').val());
+    			// $('#eTotalBrg').val(hargaTotalBrg);
     	}
 
 		$(document).ready(function() {
@@ -732,37 +775,27 @@
 
   		function hitungTotalKredit(){
   			console.log('hitungTotalKredit',$('#jenis_pem').val());
-  			let __setTotal_kredit_brg = 0,
-                __getJenis_pembayaran = $('#jenis_pem').val();
+  			var kode, quantity, sub_total_kredit=0;
+  			var jns = $('#jenis_pem').val();
   			const arr_sub_total_kredit=[];
-
-
-            $('.list-barang').find('select[name="kode_brg[]"]').each(function(idx, row) {
-                let __getKode_brg_row   = row.value;
-                let __getQTY_row        = $('.list-barang').find('input[name="qty[]"]')[idx].value;
-
+  			for (var j = 0; j <= x; j++) {
+  				kode = $('.kode_brg_'+j).val();
+  				quantity = $('.qty_'+j).val();
+                // console.log('AMBIL KODE ', $('.kode_brg_'+j).val(), $('.qty_'+j).val());
                 $.ajax({
-                    url : '<?= base_url('barang/countTotalKredit') ?>',
+                    url : '<?= base_url('barang/countTotalKredit') ?>', // file proses penginputan
                     method: 'POST',
-                    data : {
-                        "kode": __getKode_brg_row,
-                        "quantity": __getQTY_row, 
-                        "jenis": __getJenis_pembayaran
-                    }
+                    data : {"kode": kode,"quantity": quantity, "jenis": jns}
 
                 }).success(function (data){
-                    obj = JSON.parse(data);
-                    
-                    arr_sub_total_kredit.push(obj.data.sub_total_kredit);
-                    __setTotal_kredit_brg += parseInt(obj.data.sub_total_kredit);
-
-                    console.log('hitungTotalKredit 617', obj);
-                    $('#eTotalBrg').val(__setTotal_kredit_brg); 
-                    $('#eHrg').val(arr_sub_total_kredit); 
+                	obj = JSON.parse(data);
+                	arr_sub_total_kredit.push(obj.data.sub_total_kredit);
+                	sub_total_kredit += parseInt(obj.data.sub_total_kredit);
+                	console.log('hitungTotalKredit 617', obj);
+                	$('#eTotalBrg').val(sub_total_kredit); 
+                	$('#eHrg').val(arr_sub_total_kredit); 
                 })
-            });
-
-
+            }
   		}
 
 	</script>

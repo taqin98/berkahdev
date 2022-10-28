@@ -400,7 +400,25 @@ class Penjualan extends CI_Controller {
 	{
 		$data['data'] = $this->PenjualanModel->getDataEdit($id);
 		$data['pelanggan'] = $this->PelangganModel->getPelanggan($data['data']->kode_pelanggan);
-		$data['penjualan_detail'] = $this->db->get_where('tb_penjualan_detail', array('kode_penjualan' => $id))->result();
+		// $data['penjualan_detail'] = $this->db->get_where('tb_penjualan_detail', array('kode_penjualan' => $id))->result();
+		$data['penjualan_detail'] = $this->db->query("SELECT
+			pd.detail_id,
+			pd.kode_penjualan,
+			p.jumlah_produk as total_produk,
+			pd.kode_brg,
+			pd.qty,
+			brg.harga_pcs,
+			brg.hrg_kredit,
+			brg.hrg_cash,
+			(pd.qty * brg.harga_pcs) as sub_total,
+			CASE
+				WHEN p.jenis_pembayaran = 'K' THEN brg.`hrg_kredit` * pd.qty
+				ELSE brg.`hrg_cash` * pd.qty
+			END as sub_total_kredit_cash
+			FROM tb_penjualan_detail pd
+			LEFT JOIN tb_barang brg ON brg.kode_brg = pd.kode_brg
+			LEFT JOIN tb_penjualan p ON p.kode_penjualan = pd.kode_penjualan
+			WHERE pd.kode_penjualan = '$id' ")->result();
 		$data['karyawan'] = $this->KaryawanModel->getAllData();
 		$data['barang'] = $this->BarangModel->getAllData();
 		// $data['barang'] = $this->BarangModel->getData($id);
